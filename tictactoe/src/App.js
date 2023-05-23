@@ -20,8 +20,10 @@ export default function Board() {
         newState[idx] = "X";
         setState(newState);
     };
+
     return (
-        //  setter via param, props to child
+        //  Using lambda function can transfer function and params by wrapping
+        //  that can be executed when event occurs, not when rendering occurs.
         <>
             <div className="row">
                 <Square value={ state[0] } clickButton={ () => clickState(0) } />
