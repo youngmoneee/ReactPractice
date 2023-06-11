@@ -2,7 +2,6 @@ import './App.css';
 import {useState} from "react";
 
 function Square( { value, clickButton } ) {
-
     return (
         <button
             className="square"
@@ -16,17 +15,39 @@ export default function Board() {
     const [state, setState] = useState(Array(9).fill(null));
     const [xFlag, setXFlag] = useState(true);
     function clickState(idx) {
+        //  No actions if clicked or Declared Winner
+        if (state[idx] || calcWinner(state)) return ;
+
         const newState = state.slice();
-        if (xFlag) newState[idx] = 'X';
-        else newState[idx] = 'O';
+        newState[idx] = xFlag ? 'X' : 'O';
         setState(newState);
         setXFlag(!xFlag);
     };
 
+    function calcWinner( square ) {
+        //  Combination of Cases
+        const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ]
+        for (let i = 0; i < lines.length; ++i) {
+            const [a, b, c] = lines[i];
+            if (square[a] && square[a] === square[b] && square[a] === square[c]) return true;
+        }
+        return null;
+    }
+
+    let status = calcWinner(state) ? `Winner is ${!xFlag ? 'X' : 'O'}` : `Next is ${xFlag ? 'X' : 'O'}`;
+
     return (
-        //  Using lambda function can transfer function and params by wrapping
-        //  that can be executed when event occurs, not when rendering occurs.
         <>
+            <div className="status">{ status }</div>
             <div className="row">
                 <Square value={ state[0] } clickButton={ () => clickState(0) } />
                 <Square value={ state[1] } clickButton={ () => clickState(1) } />
