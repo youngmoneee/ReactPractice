@@ -13,12 +13,14 @@ function Square( { value, clickButton } ) {
     );
 }
 export default function Board() {
-    //  []*9
     const [state, setState] = useState(Array(9).fill(null));
+    const [xFlag, setXFlag] = useState(true);
     function clickState(idx) {
         const newState = state.slice();
-        newState[idx] = "X";
+        if (xFlag) newState[idx] = 'X';
+        else newState[idx] = 'O';
         setState(newState);
+        setXFlag(!xFlag);
     };
 
     return (
