@@ -38,8 +38,7 @@ export default function Board() {
         ]
         for (let i = 0; i < lines.length; ++i) {
             const [a, b, c] = lines[i];
-            if (square[a] === square[b] && square[b] === square[c] && square[c] === square[a])
-                return true;
+            if (square[a] && square[a] === square[b] && square[a] === square[c]) return true;
         }
         return null;
     }
@@ -48,6 +47,7 @@ export default function Board() {
 
     return (
         <>
+            <div className="status">{ status }</div>
             <div className="row">
                 <Square value={ state[0] } clickButton={ () => clickState(0) } />
                 <Square value={ state[1] } clickButton={ () => clickState(1) } />
