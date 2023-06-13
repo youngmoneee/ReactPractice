@@ -11,19 +11,15 @@ function Square( { value, clickButton } ) {
         </button>
     );
 }
-export default function Board() {
-    const [state, setState] = useState(Array(9).fill(null));
-    const [xFlag, setXFlag] = useState(true);
+function Board({ xFlag, state, onPlay }) {
     function clickState(idx) {
         //  No actions if clicked or Declared Winner
         if (state[idx] || calcWinner(state)) return ;
 
         const newState = state.slice();
         newState[idx] = xFlag ? 'X' : 'O';
-        setState(newState);
-        setXFlag(!xFlag);
+        onPlay( newState );
     };
-
     function calcWinner( square ) {
         //  Combination of Cases
         const lines = [
@@ -64,5 +60,25 @@ export default function Board() {
                 <Square value={ state[8] } clickButton={ () => clickState(8) } />
             </div>
         </>
+    );
+}
+export default function Game() {
+    const [history, setHistory] = useState([Array(9).fill(null)]);
+    const [xFlag, setXFlag] = useState(true);
+    const currentHistory = history[history.length - 1];
+
+    function handlePlay( newState ) {
+        //  Like history.append( newState );
+        setHistory([ ...history, newState ]);
+        setXFlag(!xFlag);
+    }
+    return (
+        <div className="game">
+            <div className="game-board">
+                <Board state = { currentHistory } xFlag={ xFlag } onPlay={ handlePlay }/>
+            </div>
+            <div className="game-info">
+            </div>
+        </div>
     );
 }
