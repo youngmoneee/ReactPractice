@@ -1,5 +1,6 @@
 import './App.css';
 import {useState} from "react";
+import {getNextKeyDef} from "@testing-library/user-event/dist/keyboard/getNextKeyDef";
 
 function Square( { value, clickButton } ) {
     return (
@@ -65,19 +66,38 @@ function Board({ xFlag, state, onPlay }) {
 export default function Game() {
     const [history, setHistory] = useState([Array(9).fill(null)]);
     const [xFlag, setXFlag] = useState(true);
-    const currentHistory = history[history.length - 1];
+    const [currentMove, setCurrentMove] = useState(0);
+    const currentHistory = history[currentMove];
 
     function handlePlay( newState ) {
         //  Like history.append( newState );
-        setHistory([ ...history, newState ]);
+        const nextHistory = [...history.slice(0, currentMove + 1), newState];
+        setHistory( nextHistory );
+        setCurrentMove(nextHistory.length - 1)
         setXFlag(!xFlag);
     }
+
+    function jumpTo( nextMove ) {
+        setCurrentMove(nextMove);
+        setXFlag(nextMove % 2 === 0);
+    }
+
+    const moves = history.map((state, move) => {
+        let desc = move > 0 ? `Go to move #${ move }` : 'Go to GameStart';
+        return (
+            <li>
+                <button onClick={ () => jumpTo(move)}>{ desc }</button>
+            </li>
+        );
+    })
+
     return (
         <div className="game">
             <div className="game-board">
                 <Board state = { currentHistory } xFlag={ xFlag } onPlay={ handlePlay }/>
             </div>
             <div className="game-info">
+                <ol> { moves } </ol>
             </div>
         </div>
     );
